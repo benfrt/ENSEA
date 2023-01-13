@@ -1,8 +1,5 @@
 #include "main.h"
 
-int exit_rq = 0;
-
-
 char cmd[128];
 
 void welcomeMSG(){
@@ -14,20 +11,20 @@ void displayPrompt(){
 	write(0,MSG_PROMPT,strlen(MSG_PROMPT));
 }
 
-void displayNextPrompt(int status){
+void displayNextPrompt(int status,unsigned long time){
 	
 	char buff[CMD_SIZE];
 	memset(buff,'\0',CMD_SIZE);
 	
-	clockid_t clk_id;
+	
 	
 	
 	if( WIFEXITED(status)){
 		
 	
-	sprintf(buff,MSG_NEXT_PROMPT_EXIT,status,);
+	sprintf(buff,MSG_NEXT_PROMPT_EXIT,status,(int)time);
 	}else{
-	sprintf(buff,MSG_NEXT_PROMPT_SIGN,status);
+	sprintf(buff,MSG_NEXT_PROMPT_SIGN,status,(int)time);
 	}
 	write(0,buff,sizeof(buff));
 	
@@ -35,12 +32,11 @@ void displayNextPrompt(int status){
 
 void cmd_exe(char CMD[]){
 	execlp(CMD,CMD,NULL);
-	
+
 	write(0,EXIT_FAILURE_MSG,sizeof(EXIT_FAILURE_MSG));
 	exit(getpid());
 		
 }
-
 
 void readCmd(){
 	int sizeRead;
@@ -59,27 +55,33 @@ void readCmd(){
 }
 
 int main(){
-        
+    
 	pid_t pid = 0;
 	int status;
+	
 	welcomeMSG();
 	displayPrompt();
 	
+	clockid_t clk_id = CLOCK_REALTIME;
+	struct timespec tp1;
+	tp1.tv_sec = 0;
+	tp1.tv_nsec = 0;
+	clock_gettime(clk_id, &tp1);
 	
-
 	while(1){
 		
 		readCmd(cmd);
-		
-		
+		clock_settime(clk_id,&tp1);
 		pid = fork();
 		
 		if(pid == 0){
-		cmd_exe(cmd);
+			
+			cmd_exe(cmd);
 		}else{
-		wait(&status);
-		displayNextPrompt(status);
-		
+			
+			wait(&status);
+			clock_gettime(clk_id,&tp1);
+			displayNextPrompt(status,tp1.tv_nsec/ 1000000);
 		}
 	}
 }
