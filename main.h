@@ -18,3 +18,11 @@
 #define MSG_NEXT_PROMPT_EXIT "enseash [ exit : %d| %d ms ]%%"
 
 #define CMD_SIZE 128
+
+
+
+void welcomeMSG();
+void displayPrompt();
+void displayNextPrompt(int status,unsigned long time);
+void cmd_exe(char CMD[]);
+void readCmd();
