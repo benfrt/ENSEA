@@ -12,12 +12,9 @@
 #define EXIT_FAILURE_MSG "YOU HAVE A BAD LUCK ! TRY AGAIN...\n"
 
 
-#define EXIT_MSG "Good bye, have a great time.\n"
+#define EXIT_MSG "Bye, have a great time.\n"
 
 #define MSG_NEXT_PROMPT_SIGN "enseash [ sign : %d| %d ms ]%%"
 #define MSG_NEXT_PROMPT_EXIT "enseash [ exit : %d| %d ms ]%%"
 
 #define CMD_SIZE 128
-
-#define PATH   "/home"
-#define test "main.c"
